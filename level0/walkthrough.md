@@ -12,8 +12,8 @@ Par exemple:
 
 > login:password -> *`level0:level0`*
 ```
-:~$ su level00
-Password:level00
+:~$ su level0
+Password:level0
 ```
 ---
 
@@ -52,8 +52,15 @@ Avec un ou plusieurs paramètres, il affiche un simple `No !`
 (gdb) disas main
 Dump of assembler code for function main:
 ...
-   0x08048ed4 <+20>:	call   0x8049710 <atoi>
-   0x08048ed9 <+25>:	cmp    $0x1a7,%eax
+   0x08048ed4 <+20>:	   call   0x8049710 <atoi>
+   0x08048ed9 <+25>:	   cmp    $0x1a7,%eax
+   (...)
+   0x08048ef8 <+56>:	   call   0x8054680 <getegid>
+   0x08048f01 <+65>:	   call   0x8054670 <geteuid>
+   0x08048f21 <+97>:	   call   0x8054700 <setresgid>
+   0x08048f3d <+125>:	call   0x8054690 <setresuid>
+   0x08048f51 <+145>:	call   0x8054640 <execv>
+   (...)
 ...
 End of assembler dump.
 
@@ -64,5 +71,17 @@ Le binaire appel un simple `atoi` et le `cmp` avec `0x1a7 = 423`
 
 ```
 :~$ ./level0 423
-()
+```
+
+(...) -> Après sa comparaison, le programme appelle un setuid, un getuid puis un execv pour lancer un nouveau process /bin/sh
+
+```
+$ pwd
+/home/user/level0
+
+$ cat /home/user/level1/.pass
+1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
+
+$ exit
+
 ```
