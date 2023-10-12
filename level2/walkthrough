@@ -1,0 +1,73 @@
+# Level2
+
+> login:password -> *`level2:53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77`*
+```
+:~$ su level2
+Password:53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
+```
+---
+
+```
+:~$ pwd
+/home/user/level2
+```
+
+```
+:~$ ls -la
+dr-xr-x---+ 1 level1 level1   80 Mar  6  2016 .
+dr-x--x--x  1 root   root    340 Sep 23  2015 ..
+-rw-r--r--  1 level1 level1  220 Apr  3  2012 .bash_logout
+-rw-r--r--  1 level1 level1 3530 Sep 23  2015 .bashrc
+-rwsr-s---+ 1 level2 users  5138 Mar  6  2016 level2
+-rw-r--r--+ 1 level1 level1   65 Sep 23  2015 .pass
+-rw-r--r--  1 level1 level1  675 Apr  3  2012 .profile
+```
+
+Le Home contient un binaire `level2` :
+
+```
+:~$ ./level2
+(input)
+
+:~$ ./level2 test
+(input)
+```
+
+Avec ou sans paramètre, le binaire attends un input
+
+```
+:~$ gdb level2
+...
+
+(gdb) disas main
+Dump of assembler code for function main:
+   0x0804853f <+0>:	    push   %ebp
+   0x08048540 <+1>:	    mov    %esp,%ebp
+   0x08048542 <+3>:	    and    $0xfffffff0,%esp
+   0x08048545 <+6>:	    call   0x80484d4 <p>
+   0x0804854a <+11>:	leave  
+   0x0804854b <+12>:	ret 
+End of assembler dump.
+
+(gdb) disas p
+Dump of assembler code for function p:
+   (...)
+   0x080484e2 <+14>:	call   0x80483b0 <fflush@plt>
+   (...)
+   0x080484ed <+25>:	call   0x80483c0 <gets@plt>
+   (...)
+   0x08048516 <+66>:	call   0x80483a0 <printf@plt>
+   (...)
+   0x08048522 <+78>:	call   0x80483d0 <_exit@plt>
+   (...)
+   0x0804852d <+89>:	call   0x80483f0 <puts@plt>
+   (...)
+   0x08048538 <+100>:	call   0x80483e0 <strdup@plt>
+   0x0804853d <+105>:	leave  
+   0x0804853e <+106>:	ret    
+End of assembler dump.
+
+(gdb) quit
+```
+
+On remarque que le main du binaire appel une fonction `p()` (+6) et que cette derniere appelle plusieurs fonctions dont une fonction `gets()` (+25)
