@@ -23,4 +23,5 @@ int main(int argc, char **argv)
 		args[1] = NULL;
 		execv("/bin/sh", args);
 	}
+	return (0);
 }
