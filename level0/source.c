@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 		setresgid(gid, gid, gid);
 		setresuid(uid, uid, uid);
 
-		args[0] = strdup("/bin/sh");;
+		args[0] = strdup("/bin/sh");
 		args[1] = NULL;
 		execv("/bin/sh", args);
 	}
