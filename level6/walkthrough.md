@@ -70,11 +70,10 @@ Dump of assembler code for function main:
    0x080484d3 <+87>:	ret    
 End of assembler dump.
 ```
-fonction `malloc()` (+16) de 64
-fonction `malloc()` (+32) de 4
-fonction `strcpy()` (+73)
 
-fonction pointeur (+41) : adresse `$0x8048468`
+Le main appel deux fonctions `malloc()`, la première (+16) de 64 et une deuxième (+32) de 4. Enfin il également appeler une fonction `strcpy()` (+73).
+
+On remarque également qu'il va appeler une fonction pointeur (+41) à l'adresse `$0x8048468`
 
 ```
 (gdb) info functions
@@ -123,3 +122,10 @@ Si on check la valeur de `$0x80485b0` (+6) dans `n()`
 (gdb) x/s 0x80485b0
 0x80485b0:	 "/bin/cat /home/user/level7/.pass"
 ```
+
+
+
+
+
+
+

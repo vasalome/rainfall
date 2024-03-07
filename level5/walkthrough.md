@@ -70,9 +70,7 @@ Dump of assembler code for function n:
 End of assembler dump.
 ```
 
-fonction `n()` (+6)
-n -> fonction `printf()` (+49)
-pas de fonction `system()` ou autre moyen d'acceder au stdin, donc on va voir si on trouve d'autres fonctions utiles
+Le main va appeller une fonction `n()` (+6) et a l'intérieur de celle-ci on retrouve à nouveau `printf()` (+49) mais pas fonction `system()` ou autre moyen d'acceder au stdin, donc on va voir si on trouve d'autres fonctions utiles
 
 
 ```
@@ -97,7 +95,7 @@ Non-debugging symbols:
 (...)
 ```
 
-Finalement on retrouve bien l'utilisation d'une fonction `system()`, mais egalement l'utilisation d'une fonction `o()` qui semble inexploitee
+Finalement on retrouve bien l'utilisation d'une fonction `system()`, mais egalement l'utilisation d'une fonction `o()` qui semble inexploitée
 
 ```
 (gdb) disas o
@@ -147,19 +145,13 @@ On obtient ainsi les adresses desirees dans le GOT*:
 - `o()` : **0x080484a4**
 
 
+À present on a toutes les informations neccessaires, il est tant de preparer notre exploit.
 
->
->
->
-A present qu'on a toutes les informations neccessaires, il est tant de preparer notre exploit:
-- exit adresse dans le GOT: "\x38\x98\x04\x08" (4 bytes)
-- 134513828 (adresse de `o()`) - 4 bytes (exit) = 134513824
-A PRECISER PLUS !!!!!!!!!!!!!!!!!!!!!
+On traduit adresse de la fonction `exit()` dans le GOT: "\x38\x98\x04\x08" (ce qui nous donne **4 bytes**)
 
->
->
->
+Puis on prend la valeur décimal pour atteindre `o()`: 134513828
 
+> 134513828 - 4 = **134513824 bytes**
 
 ```
 :~$ python -c 'print "\x38\x98\x04\x08" + "%134513824d%4$n"' > /tmp/level5
