@@ -69,7 +69,14 @@ Dump of assembler code for function main:
    0x080484d2 <+86>:	leave  
    0x080484d3 <+87>:	ret    
 End of assembler dump.
+```
+fonction `malloc()` (+16) de 64
+fonction `malloc()` (+32) de 4
+fonction `strcpy()` (+73)
 
+fonction pointeur (+41) : adresse `$0x8048468`
+
+```
 (gdb) info functions
 All defined functions:
 
@@ -88,14 +95,6 @@ Non-debugging symbols:
 0x0804847c  main
 (...)
 
-(gdb) disas n
-Dump of assembler code for function n:
-   (...)
-   0x08048461 <+13>:	call   0x8048370 <system@plt>
-   0x08048466 <+18>:	leave  
-   0x08048467 <+19>:	ret    
-End of assembler dump.
-
 (gdb) disas m
 Dump of assembler code for function m:
    (...)
@@ -103,5 +102,24 @@ Dump of assembler code for function m:
    0x0804847a <+18>:	leave  
    0x0804847b <+19>:	ret    
 End of assembler dump.
+
+(gdb) disas n
+Dump of assembler code for function n:
+   (...)
+   0x0804845a <+6>:	    movl   $0x80485b0,(%esp)
+   0x08048461 <+13>:	call   0x8048370 <system@plt>
+   0x08048466 <+18>:	leave  
+   0x08048467 <+19>:	ret    
+End of assembler dump.
 ```
 
+On decouvre deux fonctions qui ne sont pas exploitees:
+- `m()`: appel une fonction `puts()`
+- `n()`: appel la fonction `system()`
+
+Si on check la valeur de `$0x80485b0` (+6) dans `n()`
+
+```
+(gdb) x/s 0x80485b0
+0x80485b0:	 "/bin/cat /home/user/level7/.pass"
+```
