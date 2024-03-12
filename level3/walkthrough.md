@@ -14,13 +14,14 @@ Password:492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
 
 ```
 :~$ ls -la
-dr-xr-x---+ 1 level1 level1   80 Mar  6  2016 .
+total 17
+dr-xr-x---+ 1 level3 level3   80 Mar  6  2016 .
 dr-x--x--x  1 root   root    340 Sep 23  2015 ..
--rw-r--r--  1 level1 level1  220 Apr  3  2012 .bash_logout
--rw-r--r--  1 level1 level1 3530 Sep 23  2015 .bashrc
--rwsr-s---+ 1 level2 users  5138 Mar  6  2016 level3
--rw-r--r--+ 1 level1 level1   65 Sep 23  2015 .pass
--rw-r--r--  1 level1 level1  675 Apr  3  2012 .profile
+-rw-r--r--  1 level3 level3  220 Apr  3  2012 .bash_logout
+-rw-r--r--  1 level3 level3 3530 Sep 23  2015 .bashrc
+-rwsr-s---+ 1 level4 users  5366 Mar  6  2016 level3
+-rw-r--r--+ 1 level3 level3   65 Sep 23  2015 .pass
+-rw-r--r--  1 level3 level3  675 Apr  3  2012 .profile
 ```
 
 Le Home contient un binaire `level3` :

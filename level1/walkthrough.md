@@ -14,6 +14,7 @@ Password:1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
 
 ```
 :~$ ls -la
+total 17
 dr-xr-x---+ 1 level1 level1   80 Mar  6  2016 .
 dr-x--x--x  1 root   root    340 Sep 23  2015 ..
 -rw-r--r--  1 level1 level1  220 Apr  3  2012 .bash_logout

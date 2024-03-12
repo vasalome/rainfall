@@ -24,6 +24,7 @@ Password:level0
 
 ```
 :~$ ls -la
+total 737
 dr-xr-x---+ 1 level0 level0     60 Mar  6  2016 .
 dr-x--x--x  1 root   root      340 Sep 23  2015 ..
 -rw-r--r--  1 level0 level0    220 Apr  3  2012 .bash_logout
