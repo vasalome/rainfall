@@ -20,10 +20,10 @@ int     main(int argc, char **argv)
     void    (*func)(void);
 
 
-    arg = malloc(64);
-    func = malloc(4);
-    *func = m;
+    str = malloc(0x40);
+    func = malloc(0x4);
+    func = &m;
     strcpy(str, argv[1]);
-    func()
+    func();
     return (0);
 }

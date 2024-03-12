@@ -42,16 +42,13 @@ Avec un ou plusieurs paramètres, il affiche un simple `Nope`
 
 (gdb) disas main
 Dump of assembler code for function main:
-   0x0804847c <+0>:	push   %ebp
-   0x0804847d <+1>:	mov    %esp,%ebp
-   0x0804847f <+3>:	and    $0xfffffff0,%esp
-   0x08048482 <+6>:	sub    $0x20,%esp
+   (...)
    0x08048485 <+9>:	movl   $0x40,(%esp)
    0x0804848c <+16>:	call   0x8048350 <malloc@plt>
-   0x08048491 <+21>:	mov    %eax,0x1c(%esp)
+   (...)
    0x08048495 <+25>:	movl   $0x4,(%esp)
    0x0804849c <+32>:	call   0x8048350 <malloc@plt>
-   0x080484a1 <+37>:	mov    %eax,0x18(%esp)
+   (...)
    0x080484a5 <+41>:	mov    $0x8048468,%edx
    0x080484aa <+46>:	mov    0x18(%esp),%eax
    0x080484ae <+50>:	mov    %edx,(%eax)
@@ -71,7 +68,7 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-Le main appel deux fonctions `malloc()`, la première (+16) de 64 et une deuxième (+32) de 4. Enfin il également appeler une fonction `strcpy()` (+73).
+Le main appel deux fonctions `malloc()`, la première (+16) de `0x40` (64) et une deuxième (+32) de `0x4` (4). Enfin il également appeler une fonction `strcpy()` (+73).
 
 On remarque également qu'il va appeler une fonction pointeur (+41) à l'adresse `$0x8048468`
 
