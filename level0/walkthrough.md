@@ -87,6 +87,7 @@ Le binaire appel un simple `atoi` (+20) et le `cmp` (+25) avec `0x1a7 = 423`
 
 ```
 
+_Informations supplementaires_:
 > Cross-platform compilation issue: use setregid(gid, gid) and setreuid(uid, uid) instead of setresgid(gid, gid, gid) and setresuid(uid, uid, uid).	
 > setregid() and setreuid() are the BSD versions of setresgid() and setresuid()
 > BSD is a group of related open source Unix-like operating systems (OS)

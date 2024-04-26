@@ -1,5 +1,7 @@
 #include <stdio.h>
-#include <buffing.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 char c[68];
 
