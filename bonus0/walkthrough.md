@@ -135,4 +135,37 @@ Dump of assembler code for function p:
 End of assembler dump.
 ```
 
-Le binaire fait appel a plusieurs fonctions, dont une fonction `pp()` qui a appel ensuite une fonction `p()`
+Le binaire fait appel a plusieurs fonctions. Le main appel une fonction `pp()` qui elle ensuite appel ensuite une fonction `p()` et une fonction `strcpy()` sensible a un buffer overflow. 
+
+```
+(gdb) run
+Starting program: /home/user/bonus0/bonus0
+ -
+AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+ -
+AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+AaBbCcDdEeFfGgHhIiJjAaBbCcDdEeFfGgHhIiJj AaBbCcDdEeFfGgHhIiJj
+
+Program received signal SIGSEGV, Segmentation fault.
+0x47664665 in ?? ()
+(gdb) info registers
+eax            0x0      0
+ecx            0xffffffff       -1
+edx            0xb7fd28b8       -1208145736
+ebx            0xb7fd0ff4       -1208152076
+esp            0xbffffce0       0xbffffce0
+ebp            0x45644463       0x45644463
+esi            0x0      0
+edi            0x0      0
+eip            0x47664665       0x47664665
+eflags         0x210282 [ SF IF RF ID ]
+cs             0x73     115
+ss             0x7b     123
+ds             0x7b     123
+es             0x7b     123
+fs             0x0      0
+gs             0x33     51
+```
+
+L'`eip` est overwrite dans le 2eme buffer et on peux voir que son offset commence à 9
+
