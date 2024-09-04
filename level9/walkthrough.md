@@ -223,4 +223,4 @@ nb = 65
 if result.islower():
     nb = nb + 6
 
-print("%s => offset = %d" % (result, (ord(result[0]) - nb) * 4))
+print("%d" % ((ord(result[0]) - nb) * 4))
