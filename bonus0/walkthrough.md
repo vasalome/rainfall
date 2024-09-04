@@ -134,3 +134,5 @@ Dump of assembler code for function p:
    0x0804851d <+105>:   ret
 End of assembler dump.
 ```
+
+Le binaire fait appel a plusieurs fonctions, dont une fonction `pp()` qui a appel ensuite une fonction `p()`
