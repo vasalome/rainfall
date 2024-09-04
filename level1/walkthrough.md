@@ -59,7 +59,7 @@ End of assembler dump.
 Le binaire appel une fonction `gets()` (+16), vulnerable a un `buffer overflow exploit` pour overwrite le retour de la fonction et enchainer avec notre code.
 
 ```
-:~$ python -c 'print "a"*76' | ./level1
+:~$ python -c 'print "a" * 76' | ./level1
 :~$ Illegal instruction (core dumped)
 ```
 
