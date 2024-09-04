@@ -74,7 +74,7 @@ Le binaire appel un simple `atoi` (+20) et le `cmp` (+25) avec `0x1a7 = 423`
 :~$ ./level0 423
 ```
 
-(...) -> Après sa comparaison, le programme appelle un setuid, un getuid puis un execv pour lancer un nouveau process /bin/sh
+(...) -> Après sa comparaison, le programme appelle un setuid, un getuid puis un execv pour lancer un nouveau process `/bin/sh`
 
 ```
 :~$ pwd

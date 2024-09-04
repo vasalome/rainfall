@@ -167,5 +167,5 @@ fs             0x0      0
 gs             0x33     51
 ```
 
-L'`eip` est overwrite dans le 2eme buffer et on peux voir que son offset commence à [9](https://wiremask.eu/tools/buffer-overflow-pattern-generator/).
+L'`eip` est overwrite dans le 2eme buffer et on peux voir que son offset commence à [9](https://wiremask.eu/tools/buffer-overflow-pattern-generator/). On se rend compte aussi que l'overflow est sur le 2eme buffer, mais que ce dernier est trop petit pour y inserer notre shellcode (20 + 20 pour nos 2 buffers). Pour outrepasser ce probleme, on peux passer le shellcode dans une variable d'environnement qu'on va ensuite appeler
 
