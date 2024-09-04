@@ -8,6 +8,8 @@ Utilisez une connection ssh :
 
 Par exemple: 
 :~$ ssh 192.168.56.102 -p 4242 -l level0
+
+ssh 127.0.0.1 -p 4242 -l level0 XXXX CHECK BEFORE CORRECTION
 ```
 
 > login:password -> *`level0:level0`*
