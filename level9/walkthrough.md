@@ -153,7 +153,7 @@ Program received signal SIGSEGV, Segmentation fault.
 eax            0x41366441	1094083649
 ```
 
-On a trouver que l'offset de `eax` est a 108. Maintenant on va trouver l'adresse de notre buffer juste apres l'appel de `setAnnotation(char*)` (+131)
+On a trouver que l'offset de `eax` est a [108](https://wiremask.eu/tools/buffer-overflow-pattern-generator/). Maintenant on va trouver l'adresse de notre buffer juste apres l'appel de `setAnnotation(char*)` (+131)
 
 ```
 (gdb) b *main+136
