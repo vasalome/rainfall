@@ -78,9 +78,12 @@ Dump of assembler code for function main:
    0x080484a3 <+127>:	leave  
    0x080484a4 <+128>:	ret    
 End of assembler dump.
+
+(gdb) x/s 0x8048583
+0x8048583:	 "/bin/sh"
 ```
 
-On remarque tout de suite ce qui est exploitable, avec `memcpy()` (+79) et surtout un call a `execl()` (+117) avec en paramètre `"/bin/sh"` qu'il faut donc atteindre.
+On remarque tout de suite ce qui est exploitable, avec `memcpy()` (+79) et surtout un call a `execl()` (+117) avec en paramètre `"/bin/sh"` (0x8048583 en +110) qu'il faut donc atteindre.
 
 On voit aussi que `atoi()` (+20) traduit le 1er argument et passe ensuite une condition `<= 9` (0x9 en +29), ce même argument sera ensuite multiplie par 4 et conserve dans $ecx pour definir la taille size_t de `memcpy()`, cependant après le `memcpy()`, il devra être égal à `0x574f4c46` soit [1464814662](https://fr.calcuworld.com/calculs-mathematiques/calculatrice-hexadecimal/). Le 2eme argument quand a lui est copier dans un buffer de 40 bytes (%esp), mais `memcpy()` ne pourra copier que `4 * 9 = 36 bytes` au max. Cependant on peux lui envoyer un nombre négatif pour dépasser la limite.
 
@@ -90,4 +93,8 @@ On voit aussi que `atoi()` (+20) traduit le 1er argument et passe ensuite une co
 
 -1781279982
 
+-107374189
+
+-1073741823
+-1073741803
 

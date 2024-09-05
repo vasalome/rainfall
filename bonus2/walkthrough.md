@@ -77,13 +77,13 @@ Dump of assembler code for function main:
    0x08048594 <+107>:	add    $0x28,%eax
    0x08048597 <+110>:	mov    %eax,(%esp)
    0x0804859a <+113>:	call   0x80483c0 <strncpy@plt>
-   0x0804859f <+118>:	movl   $0x8048738,(%esp)
+   0x0804859f <+118>:	movl   $0x8048738,(%esp) // 0x8048738 = "LANG"
    0x080485a6 <+125>:	call   0x8048380 <getenv@plt>
    0x080485ab <+130>:	mov    %eax,0x9c(%esp)
    0x080485b2 <+137>:	cmpl   $0x0,0x9c(%esp)
    0x080485ba <+145>:	je     0x8048618 <main+239>
    0x080485bc <+147>:	movl   $0x2,0x8(%esp)
-   0x080485c4 <+155>:	movl   $0x804873d,0x4(%esp)
+   0x080485c4 <+155>:	movl   $0x804873d,0x4(%esp) // $0x804873d = "fi"
    0x080485cc <+163>:	mov    0x9c(%esp),%eax
    0x080485d3 <+170>:	mov    %eax,(%esp)
    0x080485d6 <+173>:	call   0x8048360 <memcmp@plt>
@@ -92,7 +92,7 @@ Dump of assembler code for function main:
    0x080485df <+182>:	movl   $0x1,0x8049988
    0x080485e9 <+192>:	jmp    0x8048618 <main+239>
    0x080485eb <+194>:	movl   $0x2,0x8(%esp)
-   0x080485f3 <+202>:	movl   $0x8048740,0x4(%esp)
+   0x080485f3 <+202>:	movl   $0x8048740,0x4(%esp) // $0x8048740 = "nl"
    0x080485fb <+210>:	mov    0x9c(%esp),%eax
    0x08048602 <+217>:	mov    %eax,(%esp)
    0x08048605 <+220>:	call   0x8048360 <memcmp@plt>
@@ -114,6 +114,15 @@ Dump of assembler code for function main:
    0x08048636 <+269>:	pop    %ebp
    0x08048637 <+270>:	ret    
 End of assembler dump.
+
+(gdb) x/s 0x8048738
+0x8048738:	 "LANG"
+
+(gdb) x/s 0x804873d
+0x804873d:	 "fi"
+
+(gdb) x/s 0x8048740
+0x8048740:	 "nl"
 ```
 
 On remarque plusieurs éléments:
@@ -121,8 +130,8 @@ On remarque plusieurs éléments:
 - un buffer d'au moins 72 (0x28 + 0x20)
 - `strncpy()` (+78)
 - `strncpy()` (+113)
-- `` LANG env
-- 2 `memcmp()` (+173 et +220) permettant de modifier la variable globale en fonction de la variable d'environnement
+- recuperation de la variable d'environnement `"LANG"` (+118)
+- 2 `memcmp()` (+173 et +220) permettant de modifier la variable globale en fonction de la variable d'environnement (1: "fi"; 2: "nl")
 
 
 ```
@@ -187,33 +196,35 @@ End of assembler dump.
 ```
 
 ```
-   0x0804848a <+6>:        mov    eax,ds:0x8049988 // 'language'
-   0x0804848f <+11>:    cmp    eax,0x1
-   0x08048492 <+14>:    je     0x80484ba <greetuser+54>
-   0x08048494 <+16>:    cmp    eax,0x2
-   0x08048497 <+19>:    je     0x80484e9 <greetuser+101>
-   0x08048499 <+21>:    test   eax,eax
-   0x0804849b <+23>:    jne    0x804850a <greetuser+134>
+   0x0804848a <+6>:	mov    0x8049988,%eax // => language
+   0x0804848f <+11>:	cmp    $0x1,%eax
+   0x08048492 <+14>:	je     0x80484ba <greetuser+54>
+   0x08048494 <+16>:	cmp    $0x2,%eax
+   0x08048497 <+19>:	je     0x80484e9 <greetuser+101>
+   0x08048499 <+21>:	test   %eax,%eax
+   0x0804849b <+23>:	jne    0x804850a <greetuser+134>
 ```
 
 ```
+(gdb) x/s 0x8049988
+0x8049988 <language>:	 ""
 (gdb) x/s 0x8048710 // 
-0x8048710:     "Hello "
+0x8048710:	 "Hello "
 (gdb) x/s 0x804872a
-0x804872a:     "Goedemiddag! "
+0x804872a:	 "Goedemiddag! "
 (gdb) x/s 0x8048717
-0x8048717:     "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
+0x8048717:	 "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
 (gdb) x/s 0x8048717
-0x8048717:     "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
+0x8048717:	 "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
 ```
-
 
 
 On remarque aussi une fonction `greetuser()`:
 - un buffer de 72 (0x48)
 - (+11) cmp 1 => `strcpy()` buffer dans "Hyv\xc3\xa4\xc3\xa4 p\xc3\xa4iv\xc3\xa4\xc3\xa4 "
-- (+11) cmp 2 => `strcpy()` buffer dans "Goedemiddag! "
-- (+11) cmp 0 => `strcpy()` buffer dans "Hello "
+- (+16) cmp 2 => `strcpy()` buffer dans "Goedemiddag! "
+- (+21) cmp 0 => `strcpy()` buffer dans "Hello "
+- (+147) `strcat()`
 
 
 
