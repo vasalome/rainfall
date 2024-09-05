@@ -80,4 +80,10 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-On remarque tout de suite ce qui est exploitable, avec `memcpy()` (+79) et surtout un call a `execl()` (+117) avec en paramètre `"/bin/sh", "sh", 0`
+On remarque tout de suite ce qui est exploitable, avec `memcpy()` (+79) et surtout un call a `execl()` (+117) avec en paramètre `"/bin/sh"` qu'il faut donc atteindre.
+
+On voit aussi que `atoi()` (+20) traduit le 1er argument et passe ensuite une condition `<= 9` (0x9 en +29), cependant après le `memcpy()`, ce même argument doit être égal à `0x574f4c46` soit [1464814662](https://fr.calcuworld.com/calculs-mathematiques/calculatrice-hexadecimal/). Le 2eme argument quand a lui est copier dans un buffer de 40 bytes (%esp), mais `memcpy()` ne pourra copier que `4 * 9 = 36 bytes` au max. Cependant on peux lui envoyer un nombre négatif pour dépasser la limite.
+
+-366203665
+
+-2147483647 + 44 = -2147483603

