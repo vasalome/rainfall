@@ -226,7 +226,10 @@ On remarque aussi une fonction `greetuser()`:
 - (+21) cmp 0 => `strcpy()` buffer dans "Hello "
 - (+147) `strcat()`
 
-
+```
+:~$ LANG=nl ./bonus2 test1 test2
+Goedemiddag! test1
+```
 
 
 
