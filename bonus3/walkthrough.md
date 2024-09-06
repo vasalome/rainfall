@@ -117,60 +117,39 @@ Dump of assembler code for function main:
    0x0804861a <+294>:	pop    %ebp
    0x0804861b <+295>:	ret    
 End of assembler dump.
+
+(gdb) x/s 0x804870a
+0x804870a:       "/bin/sh"
+
+(gdb) x/s 0x80486f2
+0x80486f2:       "/home/user/end/.pass"
+
 ```
 
-On remarque 
+On remarque plusieurs éléments, mais surtout notre but principal, qui se trouve etre une nouvelle fois une fonction execl() (+262) avec en paramètre "/bin/sh" (0x8048583 en +255) qu'il faut donc atteindre.
 
+- Le binaire n'accepte que 2 arguments en comptant lui meme (+73) et check si le resultat de `fopen()` n'est pas NULL (+63).
+- `fopen()` (+31) lui absorbe le contenu de `"/home/user/end/.pass"` (+19 Autre piste potentiel)
+- `atoi()` (+144)
+- `fread()` (+191)
+- `fclose()` (+206)
+- `strcmp()` (+230)
+- `puts()` (+279)
 
+On comprends alors que pour passer la condition du `strcmp()` (+230) qui compare:
+- buffer[atoi(argv[1])] = "\0"
+- argv[1]
 
+Alors argv[1] doit simplement etre une chaine vide (atoi("") = "" = "\0")
 
-
-
-
-
-
-
-
-
-
-
-as we notice after creat the stack function they try to read a file by fopen we check the params they give to fopen we found r read mode, /home/user/end/.pass.
-
-when we try with gdb we can't read the file /home/user/end/.pass so we try to set a file to understand what happend next.
-
-(gdb) set $eax="/home/user/bonus3/test"
-(gdb) in r
-Ambiguous command "in r": inf, inferior, info, init-if-undefined, inspect, internals, interpreter-exec, interrupt.
-(gdb) i r
-eax            0x804a008	134520840
-ecx            0xbffff7a4	-1073743964
-edx            0x80486f0	134514416
-ebx            0xb7fd0ff4	-1208152076
-esp            0xbffff660	0xbffff660
-ebp            0xbffff708	0xbffff708
-esi            0x0	0
-edi            0x0	0
-eip            0x8048513	0x8048513 <main+31>
-eflags         0x200286	[ PF SF IF ID ]
-cs             0x73	115
-ss             0x7b	123
-ds             0x7b	123
-es             0x7b	123
-fs             0x0	0
-gs             0x33	51
-(gdb) x/s 0x804a008
-0x804a008:	 "/home/user/bonus3/test"
-   0x08048551 <+93>:	mov    edx,DWORD PTR [esp+0x9c]
-   0x08048558 <+100>:	mov    DWORD PTR [esp+0xc],edx
-   0x0804855c <+104>:	mov    DWORD PTR [esp+0x8],0x42
-   0x08048564 <+112>:	mov    DWORD PTR [esp+0x4],0x1
-   0x0804856c <+120>:	mov    DWORD PTR [esp],eax
-   0x0804856f <+123>:	call   0x80483d0 <fread@plt>
-in this part we read the file and we store it into esp+0x18 then we found call atoi (av[1]) and set 0 to [esp+eax*1+0x18].
-
-call fread again and then call strcmp compare between [esp+0x18] and argv[1] so if we give a as argument 0 will set on [esp + 0 * 1 + 0x18] = '\0' and compare it with [esp+0x18] as we know when we give a string to atoi return 0 but 0 != '\0' so we give it a empty string and we got :
-
-bonus3@RainFall:~$ ./bonus3 ''
+```
+:~$ ./bonus3 ""
 $ whoami
 end
-$
+$ cat /home/user/end/.pass
+3321b6f81659f9a71c76616f606e4b50189cecfea611393d5d649f75e157353c
+$ exit
+
+:~$ su end
+Password: 3321b6f81659f9a71c76616f606e4b50189cecfea611393d5d649f75e157353c
+```
