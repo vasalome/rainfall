@@ -70,8 +70,8 @@ Dump of assembler code for function main:
    0x0804854d <+89>:	lea    0x18(%esp),%eax
    0x08048551 <+93>:	mov    0x9c(%esp),%edx
    0x08048558 <+100>:	mov    %edx,0xc(%esp)
-   0x0804855c <+104>:	movl   $0x42,0x8(%esp)
-   0x08048564 <+112>:	movl   $0x1,0x4(%esp)
+   0x0804855c <+104>:	movl   $0x42,0x8(%esp) // size 66 blocCount de fread() (1)
+   0x08048564 <+112>:	movl   $0x1,0x4(%esp) // size 1 blocSize de fread() (1)
    0x0804856c <+120>:	mov    %eax,(%esp)
    0x0804856f <+123>:	call   0x80483d0 <fread@plt>
    0x08048574 <+128>:	movb   $0x0,0x59(%esp)
@@ -80,13 +80,13 @@ Dump of assembler code for function main:
    0x0804857f <+139>:	mov    (%eax),%eax
    0x08048581 <+141>:	mov    %eax,(%esp)
    0x08048584 <+144>:	call   0x8048430 <atoi@plt>
-   0x08048589 <+149>:	movb   $0x0,0x18(%esp,%eax,1)
+   0x08048589 <+149>:	movb   $0x0,0x18(%esp,%eax,1)  // buffer[atoi(argv[1])] = "\0"
    0x0804858e <+154>:	lea    0x18(%esp),%eax
    0x08048592 <+158>:	lea    0x42(%eax),%edx
    0x08048595 <+161>:	mov    0x9c(%esp),%eax
    0x0804859c <+168>:	mov    %eax,0xc(%esp)
-   0x080485a0 <+172>:	movl   $0x41,0x8(%esp)
-   0x080485a8 <+180>:	movl   $0x1,0x4(%esp)
+   0x080485a0 <+172>:	movl   $0x41,0x8(%esp) // size 65 blocCount de fread() (1)
+   0x080485a8 <+180>:	movl   $0x1,0x4(%esp) // size 1 blocSize de fread() (1)
    0x080485b0 <+188>:	mov    %edx,(%esp)
    0x080485b3 <+191>:	call   0x80483d0 <fread@plt>
    0x080485b8 <+196>:	mov    0x9c(%esp),%eax
@@ -98,7 +98,7 @@ Dump of assembler code for function main:
    0x080485cf <+219>:	mov    %eax,0x4(%esp)
    0x080485d3 <+223>:	lea    0x18(%esp),%eax
    0x080485d7 <+227>:	mov    %eax,(%esp)
-   0x080485da <+230>:	call   0x80483b0 <strcmp@plt>
+   0x080485da <+230>:	call   0x80483b0 <strcmp@plt> 
    0x080485df <+235>:	test   %eax,%eax
    0x080485e1 <+237>:	jne    0x8048601 <main+269>
    0x080485e3 <+239>:	movl   $0x0,0x8(%esp)
@@ -130,14 +130,16 @@ On remarque plusieurs éléments, mais surtout notre but principal, qui se trouv
 
 - Le binaire n'accepte que 2 arguments en comptant lui meme (+73) et check si le resultat de `fopen()` n'est pas NULL (+63).
 - `fopen()` (+31) lui absorbe le contenu de `"/home/user/end/.pass"` (+19 Autre piste potentiel)
-- `atoi()` (+144)
-- `fread()` (+191)
-- `fclose()` (+206)
-- `strcmp()` (+230)
+- `fread()` (+123) Stock dans le 1er buffer la valeur de `fopen()`
+- `atoi()` (+144) prends argv[1]
+- valeur du 1er buffer modifié (+149) avec buffer[atoi(argv[1])] = "\0"
+- `fread()` (+191) Stock dans le 2e buffer la valeur de `fopen()`
+- `fclose()` (+206) 
+- `strcmp()` (+230) Compare les strings du 1er buffer et d'argv[1]
 - `puts()` (+279)
 
 On comprends alors que pour passer la condition du `strcmp()` (+230) qui compare:
-- buffer[atoi(argv[1])] = "\0"
+- 1er buffer (sachant que buffer[atoi(argv[1])] = "\0")
 - argv[1]
 
 Alors argv[1] doit simplement etre une chaine vide (atoi("") = "" = "\0")
