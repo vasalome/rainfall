@@ -20,7 +20,7 @@ int	main(int argc, char **argv)
 	if (strcmp(buffer1, argv[1]) == 0)
 		execl("/bin/sh", "sh", 0);
 	else
-		puts(buffer1[66]);
+		puts(buffer1);
 
 	return (0);
 }
