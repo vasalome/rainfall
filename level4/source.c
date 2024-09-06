@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int g;
+int m;
 
 int p(char *buffer)
 {
@@ -15,10 +15,10 @@ void n(void)
 
 	fgets(buffer, 512, stdin);
 	p(buffer);
-	if (g == 16930116)
-  {
-    system("/bin/cat /home/user/level5/.pass");
-  }
+	if (m == 16930116)
+	{
+		system("/bin/cat /home/user/level5/.pass");
+	}
 }
 
 int main(void)

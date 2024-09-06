@@ -44,14 +44,24 @@ Avec ou sans paramètre, le binaire attends un input
 
 (gdb) disas main
 Dump of assembler code for function main:
-   (...)
-   0x080484ad <+6>:	    call   0x8048457 <n>
-   (...)
+   0x080484a7 <+0>:	push   %ebp
+   0x080484a8 <+1>:	mov    %esp,%ebp
+   0x080484aa <+3>:	and    $0xfffffff0,%esp
+   0x080484ad <+6>:	call   0x8048457 <n>
+   0x080484b2 <+11>:	leave  
+   0x080484b3 <+12>:	ret    
 End of assembler dump.
 
 (gdb) disas n
 Dump of assembler code for function n:
-   (...)
+   0x08048457 <+0>:	push   %ebp
+   0x08048458 <+1>:	mov    %esp,%ebp
+   0x0804845a <+3>:	sub    $0x218,%esp
+   0x08048460 <+9>:	mov    0x8049804,%eax
+   0x08048465 <+14>:	mov    %eax,0x8(%esp)
+   0x08048469 <+18>:	movl   $0x200,0x4(%esp)
+   0x08048471 <+26>:	lea    -0x208(%ebp),%eax
+   0x08048477 <+32>:	mov    %eax,(%esp)
    0x0804847a <+35>:	call   0x8048350 <fgets@plt>
    0x0804847f <+40>:	lea    -0x208(%ebp),%eax
    0x08048485 <+46>:	mov    %eax,(%esp)
@@ -62,7 +72,7 @@ Dump of assembler code for function n:
    0x08048499 <+66>:	movl   $0x8048590,(%esp)
    0x080484a0 <+73>:	call   0x8048360 <system@plt>
    0x080484a5 <+78>:	leave  
-   (...)
+   0x080484a6 <+79>:	ret    
 End of assembler dump.
 
 (gdb) disas p
@@ -89,7 +99,7 @@ On remarque que le main du binaire appel une fonction `n()` (+6) et que cette de
 
 Cette fonction `p()` appelera par contre une nouvelle fois une fonction `printf()` (+12) vulnerable comme dans le level precedent.
 
-On voit aussi dans `n()` une comparaison `cmp` (+59) de `16930116` avec une variable globale `0x8049810` nomme `m` et on va donc faire en sorte d'utiliser a nouveau la vulnerabilite de `printf()` pour en trouver sa valeur avec plusieurs `%x` qui affichera directement l'adresse.
+On voit aussi dans `n()` une comparaison `cmp` (+59) de `16930116` (0x1025544) avec une variable globale `0x8049810` nomme `m` et on va donc faire en sorte d'utiliser a nouveau la vulnerabilite de `printf()` pour en trouver sa valeur avec plusieurs `%x` qui affichera directement l'adresse.
 
 ```
 :~$ echo "%x %x %x %x %x %x %x %x %x %x %x %x" | ./level4

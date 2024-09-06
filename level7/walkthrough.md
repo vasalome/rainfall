@@ -180,19 +180,22 @@ strcpy(0x37614136, "test2" <unfinished ...>
 
 ```
 
-On trouve un offset a [20](https://wiremask.eu/tools/buffer-overflow-pattern-generator/).
+On trouve un offset a [20](https://wiremask.eu/tools/buffer-overflow-pattern-generator/) (0x37614136).
 
-On va overflow le premier argument avec l'adresse de puts dans le GOT pour mettre ensuite l'adresse de `m()` dans le second. Pour ce faire on va chercher l'adresse de puts dans le GOT.
+On va overflow le premier argument avec l'adresse de puts dans le GOT pour mettre ensuite l'adresse de `m()` (0x080484f4) dans le second. Pour ce faire on va chercher l'adresse de puts dans le GOT.
 
 ```
 :~$ gdb level7
 ...
 
 (gdb) disas main
-(...)
-   0x080485f7 <+214>:	call   0x8048400 <puts@plt>
+Dump of assembler code for function main:
+   (...)
+   0x080485f7 <+214>:	call   0x8048400 <puts@plt> // disas here
+   (...)   
+End of assembler dump.
 
-(gdb) disas 0x8048400
+(gdb) disas 0x8048400 // adresse de puts() (+214)
 (...)
    0x08048400 <+0>:     jmp    *0x8049928
 
