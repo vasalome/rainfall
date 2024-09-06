@@ -12,6 +12,6 @@ int main(int argc,char **argv) {
     return(1);
   memcpy(buffer, argv[2], nb * 4);
   if (nb == 0x574f4c46)
-    execl("/bin/sh","sh",0);
+    execl("/bin/sh", "sh", 0);
   return(0);
 }
