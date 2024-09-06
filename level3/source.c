@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int		m;
+int g;
 
-void	v(void)
+void v(void)
 {
-	char buffer[520];
+	char  buffer[520];
 
 	fgets(buffer, 512, stdin);
 	printf(buffer);
-	if (m == 64)
+	if (g == 64)
 	{
 		fwrite("Wait what?!\n", 1, 12, stdout);
 		system("/bin/sh");
@@ -17,7 +17,7 @@ void	v(void)
 	return;
 }
 
-int		main(void) {
+int main(void) {
 	v();
-	return 0;
+	return(0);
 }

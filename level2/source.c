@@ -4,23 +4,23 @@
 
 int p()
 {
-    void *eip;
-    char buffer[76];
+  void  *eip;
+  char  buffer[76];
 
-    fflush(stdout);
-    gets(buffer);
-    if (((unsigned int)eip & 0xb0000000) == 0xb0000000)
-    {
-        printf(eip);
-        _exit(1);
-    }
-    puts(buffer);
-    strdup(buffer);
-    return (0);
+  fflush(stdout);
+  gets(buffer);
+  if (((unsigned int)eip & 0xb0000000) == 0xb0000000)
+  {
+    printf(eip);
+    _exit(1);
+  }
+  puts(buffer);
+  strdup(buffer);
+  return(0);
 }
 
 int main(void)
 {
-    p();
-    return (0);
+  p();
+  return(0);
 }

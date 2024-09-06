@@ -19,8 +19,8 @@ char	*p(char *str1, char *str2)
 
 char	*pp(char *buffer)
 {
-	char			input1[20];
-	char			input2[20];
+	char			    input1[20];
+	char			    input2[20];
 	unsigned int	len;
 
 	p(input1, " - ");
@@ -38,7 +38,7 @@ int		main(void)
 
 	pp(buffer);
 	puts(buffer);
-	return (0);
+	return(0);
 }
 
 /*

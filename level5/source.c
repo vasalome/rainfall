@@ -1,23 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void    o()
+void o()
 {
-    system("/bin/sh");
-    _exit(1);
+  system("/bin/sh");
+  _exit(1);
 }
 
-void    n()
+void n()
 {
-    char buffer[512];
+  char buffer[512];
 
-    fgets(buffer, 512, stdin);
-    printf(buffer);
-    exit(1);
+  fgets(buffer, 512, stdin);
+  printf(buffer);
+  exit(1);
 }
 
-int     main()
+int main()
 {
-    n();
-    return (0);
+  n();
+  return(0);
 }

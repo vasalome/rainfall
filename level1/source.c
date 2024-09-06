@@ -3,14 +3,14 @@
 
 void run(void)
 {
-  fwrite("Good... Wait what?\n", 1, 19, stdout);
-  system("/bin/sh");
+	fwrite("Good... Wait what?\n", 1, 19, stdout);
+	system("/bin/sh");
 }
 
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-   char s[76];
+	char str[76];
 
-   gets(s);
-   return (0);
+	gets(str);
+	return(0);
 }

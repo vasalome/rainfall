@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	char	*env = NULL;
 
 	if (argc != 3)
-		return (1);
+		return(1);
 
 	memset(buffer, 0, 72);
 	strncpy(buffer, argv[1], 40);
@@ -39,5 +39,5 @@ int main(int argc, char **argv)
 	}
 
 	greetuser(buffer);
-	return (0);
+	return(0);
 }

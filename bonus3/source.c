@@ -9,7 +9,7 @@ int	main(int argc, char **argv)
 	stream = fopen("/home/user/end/.pass", "r");
   
 	if (!stream || argc != 2)
-		return (-1);
+		return(-1);
 
 	fread(buffer1, 1, 66, stream);
 	buffer1[atoi(argv[1])] = "\0";
@@ -22,5 +22,5 @@ int	main(int argc, char **argv)
 	else
 		puts(buffer1);
 
-	return (0);
+	return(0);
 }
